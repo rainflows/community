@@ -1,8 +1,14 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /community
+
 mybatis:
   typeAliasesPackage: com.yu.pojo
   mapperLocations: classpath:mybatis/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+    use-generated-keys: true
 
 spring:
   datasource:
@@ -10,7 +16,23 @@ spring:
     password: 666666
     url: jdbc:mysql://localhost:3306/mybatis?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT
     driverClassName: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 30000
+  mail:
+    host: smtp.163.com
+    port: 465
+    username: h578960@163.com
+    password: FAGFGLYQKRNCOIXJ
+    protocol: smtps
+    properties:
+      mail.smtp.ssl.enable: true
+  thymeleaf:
+    cache: false
 
-#logging:
-#  level:
-#    com.yu: debug
+community:
+  path:
+    domain: http://localhost:8080
+    upload: d:/javaweb/data/upload

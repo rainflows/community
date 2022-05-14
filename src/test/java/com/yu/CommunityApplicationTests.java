@@ -1,8 +1,10 @@
 package com.yu;
 
 import com.yu.dao.DiscussPostMapper;
+import com.yu.dao.LoginTicketMapper;
 import com.yu.dao.UserMapper;
 import com.yu.pojo.DiscussPost;
+import com.yu.pojo.LoginTicket;
 import com.yu.pojo.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,12 @@ class CommunityApplicationTests {
 	 */
 	@Autowired
 	private DiscussPostMapper discussPostMapper;
+
+	/**
+	 * 登录票映射器
+	 */
+	@Autowired
+	private LoginTicketMapper loginTicketMapper;
 
 	@Test
 	void contextLoads() {
@@ -56,5 +64,25 @@ class CommunityApplicationTests {
 		}
 //		int rows = discussPostMapper.selectDiscussPosRows(149);
 //		System.out.println(rows);
+	}
+
+	@Test
+	public void testInsertLoginTicket(){
+		LoginTicket loginTicket = new LoginTicket();
+		loginTicket.setUserId(101);
+		loginTicket.setTicket("abc");
+		loginTicket.setStatus(0);
+		loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+		loginTicketMapper.insertLoginTicket(loginTicket);
+	}
+
+	@Test
+	public void selectLoginTicket(){
+		LoginTicket ticket = loginTicketMapper.selectByTicket("abc");
+		System.out.println(ticket);
+
+		loginTicketMapper.updateStatus("abc",1);
+		ticket = loginTicketMapper.selectByTicket("abc");
+		System.out.println(ticket);
 	}
 }
