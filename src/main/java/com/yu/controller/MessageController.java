@@ -187,6 +187,12 @@ public class MessageController {
         return CommunityUtil.getJSONString(0);
     }
 
+    /**
+     * 删除私信
+     *
+     * @param id id
+     * @return {@link String}
+     */
     @RequestMapping(path = "/letter/delete", method = RequestMethod.POST)
     @ResponseBody
     public String deleteLetter(int id) {
