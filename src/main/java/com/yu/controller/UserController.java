@@ -65,7 +65,7 @@ public class UserController {
     private UserService userService;
 
     /**
-     * 主机架
+     * 用户持有者
      */
     @Autowired
     private HostHolder hostHolder;
@@ -101,13 +101,9 @@ public class UserController {
             model.addAttribute("error", "文件的格式不正确");
             return "/site/setting";
         }
-        /**
-         * 生成随机文件名
-         */
+        // 生成随机文件名
         filename = CommunityUtil.generateUUID() + suffix;
-        /**
-         * 确定文件存放路径
-         */
+        // 确定文件存放路径
         File dest = new File(uploadPath + "/" + filename);
         try {
             multipartFile.transferTo(dest);
@@ -115,9 +111,7 @@ public class UserController {
             logger.error("上传文件失败:" + e.getMessage());
             throw new RuntimeException("上传文件失败，服务器发生异常！", e);
         }
-        /**
-         * 更新当前文件路径
-         */
+        // 更新当前文件路径
         User user = hostHolder.getUser();
         String headUrl = domain + contextPath + "/user/header/" + filename;
         userService.updateHeader(user.getId(), headUrl);
@@ -132,19 +126,13 @@ public class UserController {
      */
     @RequestMapping(path = "/header/{filename}", method = RequestMethod.GET)
     public void getHeader(@PathVariable("filename") String filename, HttpServletResponse response) {
-        /**
-         * 服务器存放路径
-         */
+        // 服务器存放路径
         filename = uploadPath + "/" + filename;
-        /**
-         * 文件后缀
-         */
+        // 文件后缀
         String suffix = filename.substring(filename.lastIndexOf(".") + 1);
-        /**
-         * 响应图片
-         */
+        // 响应图片
         response.setContentType("image/" + suffix);
-        try (FileInputStream fis = new FileInputStream(filename)){
+        try (FileInputStream fis = new FileInputStream(filename)) {
             OutputStream stream = response.getOutputStream();
             byte[] buffer = new byte[1024];
             int b = 0;

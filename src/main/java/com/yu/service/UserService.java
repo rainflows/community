@@ -81,9 +81,7 @@ public class UserService implements CommunityConstant {
      */
     public Map<String, Object> register(User user) {
         HashMap<String, Object> map = new HashMap<>();
-        /**
-         * 空值处理
-         */
+        // 空值处理
         if (user == null) {
             throw new IllegalArgumentException("参数不能为空");
         }
@@ -99,9 +97,7 @@ public class UserService implements CommunityConstant {
             map.put("emailMsg", "邮箱不能为空");
             return map;
         }
-        /**
-         * 验证账号，邮箱
-         */
+        // 验证账号，邮箱
         User user1 = userMapper.selectByName(user.getUsername());
         if (user1 != null) {
             map.put("usernameMsg", "该账号已存在");
@@ -112,9 +108,7 @@ public class UserService implements CommunityConstant {
             map.put("emailMsg", "该邮箱已被注册");
             return map;
         }
-        /**
-         * 注册用户
-         */
+        // 注册用户
         user.setSalt(CommunityUtil.generateUUID().substring(0, 5));
         user.setPassword(CommunityUtil.MD5(user.getPassword() + user.getSalt()));
         user.setType(0);
@@ -123,9 +117,7 @@ public class UserService implements CommunityConstant {
         user.setHeaderUrl(String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
         user.setCreateTime(new Date());
         userMapper.insertUser(user);
-        /**
-         * 发送激活邮件
-         */
+        // 发送激活邮件
         Context context = new Context();
         context.setVariable("email", user.getEmail());
         String url = domain + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
@@ -164,41 +156,31 @@ public class UserService implements CommunityConstant {
      */
     public Map<String, Object> login(String username, String password, long expiredSecond) {
         HashMap<String, Object> map = new HashMap<>();
-        /**
-         * 空值处理
-         */
+        // 空值处理
         if (StringUtils.isBlank(username)) {
             map.put("usernameMsg", "账号不能让为空");
         }
         if (StringUtils.isBlank(password)) {
             map.put("passwordMsg", "密码不能让为空");
         }
-        /**
-         * 验证账号
-         */
+        // 验证账号
         User user = userMapper.selectByName(username);
         if (user == null) {
             map.put("usernameMsg", "该账号不存在");
             return map;
         }
-        /**
-         * 验证状态
-         */
+        // 验证状态
         if (user.getStatus() == 0) {
             map.put("usernameMsg", "该账号未激活");
             return map;
         }
-        /**
-         * 验证密码
-         */
+        // 验证密码
         password = CommunityUtil.MD5(password + user.getSalt());
         if (!user.getPassword().equals(password)) {
             map.put("password", "密码不正确");
             return map;
         }
-        /**
-         * 生成登录凭证
-         */
+        // 生成登录凭证
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setUserId(user.getId());
         loginTicket.setTicket(CommunityUtil.generateUUID());
@@ -248,9 +230,7 @@ public class UserService implements CommunityConstant {
      */
     public Map<String, Object> verifyEmail(String email) {
         Map<String, Object> map = new HashMap<>();
-        /**
-         * 空值处理
-         */
+        // 空值处理
         if (StringUtils.isBlank(email)) {
             return map;
         }
@@ -258,9 +238,7 @@ public class UserService implements CommunityConstant {
         if (user == null) {
             return map;
         } else {
-            /**
-             * 如果能查到这个邮箱就发送邮件
-             */
+            // 如果能查到这个邮箱就发送邮件
             Context context = new Context();
             context.setVariable("email", email);
             String code = CommunityUtil.generateUUID().substring(0, 4);
@@ -309,9 +287,7 @@ public class UserService implements CommunityConstant {
      */
     public Map<String, Object> updatePassword(int userId, String oldPassword, String newPassword) {
         Map<String, Object> map = new HashMap<>();
-        /**
-         * 空值处理
-         */
+        // 空值处理
         if (StringUtils.isBlank(oldPassword)) {
             map.put("oldPasswordMsg", "原密码不能为空!");
             return map;
@@ -320,21 +296,27 @@ public class UserService implements CommunityConstant {
             map.put("newPasswordMsg", "新密码不能为空!");
             return map;
         }
-        /**
-         * 验证原始密码
-         */
+        // 验证原始密码
         User user = userMapper.selectById(userId);
         oldPassword = CommunityUtil.MD5(oldPassword + user.getSalt());
         if (!user.getPassword().equals(oldPassword)) {
             map.put("oldPasswordMsg", "原密码输入有误!");
             return map;
         }
-        /**
-         * 更新密码
-         */
+        // 更新密码
         newPassword = CommunityUtil.MD5(newPassword + user.getSalt());
         userMapper.updatePassword(userId, newPassword);
 
         return map;
+    }
+
+    /**
+     * 找到用户名字
+     *
+     * @param username 用户名
+     * @return {@link User}
+     */
+    public User findUserByName(String username) {
+        return userMapper.selectByName(username);
     }
 }

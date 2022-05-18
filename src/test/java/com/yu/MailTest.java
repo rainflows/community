@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * 邮件测试
  *
- * @author shah
+ * @author yu
  * @date 2022/05/10
  */
 @SpringBootTest
@@ -17,7 +17,7 @@ public class MailTest {
     private MailClient mailClient;
 
     @Test
-    public void testTextMail(){
-        mailClient.sendMail("1907710439@qq.com","test","miao~");
+    public void testTextMail() {
+        mailClient.sendMail("1907710439@qq.com", "test", "miao~");
     }
 }

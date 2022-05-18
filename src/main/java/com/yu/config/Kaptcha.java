@@ -12,7 +12,7 @@ import java.util.Properties;
 /**
  * kaptcha
  *
- * @author shah
+ * @author yu
  * @date 2022/05/11
  */
 @Configuration

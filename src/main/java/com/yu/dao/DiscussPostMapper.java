@@ -23,6 +23,7 @@ public interface DiscussPostMapper {
      * @return {@link List}<{@link DiscussPost}>
      */
     List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
+
     /**
      * 选择讨论pos行
      *
@@ -30,4 +31,29 @@ public interface DiscussPostMapper {
      * @return int
      */
     int selectDiscussPosRows(@Param("userId") int userId);
+
+    /**
+     * 插入讨论后
+     *
+     * @param discussPost 讨论后
+     * @return int
+     */
+    int insertDiscussPost(DiscussPost discussPost);
+
+    /**
+     * 选择讨论postid
+     *
+     * @param id id
+     * @return {@link DiscussPost}
+     */
+    DiscussPost selectDiscussPostById(int id);
+
+    /**
+     * 更新评论数
+     *
+     * @param id           id
+     * @param commentCount 评论数
+     * @return int
+     */
+    int updateCommentCount(int id, int commentCount);
 }

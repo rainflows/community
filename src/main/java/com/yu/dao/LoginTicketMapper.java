@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.*;
 /**
  * 登录票映射器
  *
- * @author shah
+ * @author yu
  * @date 2022/05/11
  */
 @Mapper

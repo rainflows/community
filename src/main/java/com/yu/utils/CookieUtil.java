@@ -4,7 +4,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 饼干跑龙套
+ * cookie工具
  *
  * @author yu
  * @date 2022/05/12
@@ -17,7 +17,7 @@ public class CookieUtil {
      * @param name    名字
      * @return {@link String}
      */
-    public static String getValue(HttpServletRequest request, String name){
+    public static String getValue(HttpServletRequest request, String name) {
         if (request == null || name == null) {
             throw new IllegalArgumentException("参数为空");
         }

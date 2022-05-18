@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 家控制器
+ * 主控制器
  *
  * @author yu
  * @date 2022/05/09
@@ -39,21 +39,26 @@ public class HomeController {
      * @return {@link String}
      */
     @RequestMapping(path = "/index", method = RequestMethod.GET)
-    public String getIndexPage(Model model, Page page){
+    public String getIndexPage(Model model, Page page) {
         page.setRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index");
         List<DiscussPost> list = discussPostService.findDiscussPosts(0, page.getOffset(), page.getLimit());
-        List<Map<String,Object>> discussPosts = new ArrayList<>();
+        List<Map<String, Object>> discussPosts = new ArrayList<>();
         if (list != null) {
             for (DiscussPost post : list) {
-                Map<String,Object> map = new HashMap<>();
-                map.put("post",post);
+                Map<String, Object> map = new HashMap<>();
+                map.put("post", post);
                 User user = userService.findUserById(post.getUserId());
-                map.put("user",user);
+                map.put("user", user);
                 discussPosts.add(map);
             }
         }
-        model.addAttribute("discussPosts",discussPosts);
+        model.addAttribute("discussPosts", discussPosts);
         return "index";
+    }
+
+    @RequestMapping(path = "/error", method = RequestMethod.GET)
+    public String getErrorPage() {
+        return "/error/500";
     }
 }
