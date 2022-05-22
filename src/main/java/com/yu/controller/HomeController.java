@@ -4,7 +4,9 @@ import com.yu.pojo.DiscussPost;
 import com.yu.pojo.Page;
 import com.yu.pojo.User;
 import com.yu.service.DiscussPostService;
+import com.yu.service.LikeService;
 import com.yu.service.UserService;
+import com.yu.utils.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +25,7 @@ import java.util.Map;
  * @date 2022/05/09
  */
 @Controller
-public class HomeController {
+public class HomeController implements CommunityConstant {
     @Autowired
     private DiscussPostService discussPostService;
     /**
@@ -31,6 +33,12 @@ public class HomeController {
      */
     @Autowired
     private UserService userService;
+
+    /**
+     * 点赞服务
+     */
+    @Autowired
+    private LikeService likeService;
 
     /**
      * 得到索引页
@@ -50,6 +58,9 @@ public class HomeController {
                 map.put("post", post);
                 User user = userService.findUserById(post.getUserId());
                 map.put("user", user);
+
+                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                map.put("likeCount", likeCount);
                 discussPosts.add(map);
             }
         }
@@ -57,6 +68,11 @@ public class HomeController {
         return "index";
     }
 
+    /**
+     * 得到错误页面
+     *
+     * @return {@link String}
+     */
     @RequestMapping(path = "/error", method = RequestMethod.GET)
     public String getErrorPage() {
         return "/error/500";

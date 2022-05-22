@@ -33,7 +33,7 @@ public class CommentService implements CommunityConstant {
     private SensitiveFilter sensitiveFilter;
 
     /**
-     * 讨论后服务
+     * 讨论帖服务
      */
     @Autowired
     private DiscussPostService discussPostService;
@@ -83,5 +83,37 @@ public class CommentService implements CommunityConstant {
             discussPostService.updateCommentCount(comment.getEntityId(), count);
         }
         return rows;
+    }
+
+    /**
+     * 通过id得到评论
+     *
+     * @param id id
+     * @return {@link Comment}
+     */
+    public Comment findCommentById(int id) {
+        return commentMapper.selectCommentById(id);
+    }
+
+    /**
+     * 得到用户评论
+     *
+     * @param userId 用户id
+     * @param offset 抵消
+     * @param limit  限制
+     * @return {@link List}<{@link Comment}>
+     */
+    public List<Comment> findCommentsByUser(int userId, int offset, int limit) {
+        return commentMapper.selectCommentsByUser(userId, offset, limit);
+    }
+
+    /**
+     * 得到用户数量
+     *
+     * @param userId 用户id
+     * @return int
+     */
+    public int findCountByUser(int userId) {
+        return commentMapper.selectCountByUser(userId);
     }
 }
