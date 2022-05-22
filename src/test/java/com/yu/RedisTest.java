@@ -111,7 +111,7 @@ public class RedisTest {
     }
 
     @Test
-    public void testTransaction(){
+    public void testTransaction() {
         // 编程式事务
         Object execute = redisTemplate.execute(new SessionCallback() {
             @Override
@@ -120,9 +120,9 @@ public class RedisTest {
                 //开启事务
                 operations.multi();
 
-                operations.opsForSet().add(redisKey,"张三");
-                operations.opsForSet().add(redisKey,"李四");
-                operations.opsForSet().add(redisKey,"王二麻子");
+                operations.opsForSet().add(redisKey, "张三");
+                operations.opsForSet().add(redisKey, "李四");
+                operations.opsForSet().add(redisKey, "王二麻子");
 
                 System.out.println(operations.opsForSet().members(redisKey));
                 // 提交事务

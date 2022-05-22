@@ -150,4 +150,5 @@ public class FollowController implements CommunityConstant {
         }
         return followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
     }
+
 }

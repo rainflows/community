@@ -69,6 +69,7 @@ public class RedisKeyUtil {
      * @return {@link String}
      */
     public static String getUserLikeKey(int userId) {
+
         return PREFIX_USER_LIKE + SPLIT + userId;
     }
 
@@ -99,6 +100,7 @@ public class RedisKeyUtil {
      * @return {@link String}
      */
     public static String getKaptchaKey(String owner) {
+
         return PREFIX_KAPTCHA + SPLIT + owner;
     }
 
@@ -109,6 +111,7 @@ public class RedisKeyUtil {
      * @return {@link String}
      */
     public static String getTicketKey(String ticket) {
+
         return PREFIX_TICKET + SPLIT + ticket;
     }
 

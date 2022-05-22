@@ -90,4 +90,5 @@ public class LikeService {
         Integer count = (Integer) redisTemplate.opsForValue().get(userLikeKey);
         return count == null ? 0 : count.intValue();
     }
+
 }
