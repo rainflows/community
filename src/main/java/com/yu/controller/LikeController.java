@@ -46,10 +46,10 @@ public class LikeController implements CommunityConstant {
     /**
      * 点赞
      *
-     * @param entityType    实体类型
-     * @param entityId      实体id
-     * @param entityUserId  实体用户id
-     * @param postId 讨论帖id
+     * @param entityType   实体类型
+     * @param entityId     实体id
+     * @param entityUserId 实体用户id
+     * @param postId       讨论帖id
      * @return {@link String}
      */
     @RequestMapping(path = "/like", method = RequestMethod.POST)

@@ -112,5 +112,4 @@ public interface MessageMapper {
      * @return {@link List}<{@link Message}>
      */
     List<Message> selectNotice(int userId, String topic, int offset, int limit);
-
 }

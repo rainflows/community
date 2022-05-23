@@ -20,12 +20,27 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class MessageInterceptor implements HandlerInterceptor {
 
+    /**
+     * 用户持有者
+     */
     @Autowired
     private HostHolder hostHolder;
 
+    /**
+     * 消息服务
+     */
     @Autowired
     private MessageService messageService;
 
+    /**
+     * 处理后
+     *
+     * @param request      请求
+     * @param response     响应
+     * @param handler      处理程序
+     * @param modelAndView 模型和视图
+     * @throws Exception 异常
+     */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         User user = hostHolder.getUser();

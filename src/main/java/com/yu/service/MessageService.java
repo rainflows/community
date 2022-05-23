@@ -164,4 +164,5 @@ public class MessageService {
     public List<Message> findNotices(int userId, String topic, int offset, int limit) {
         return messageMapper.selectNotice(userId, topic, offset, limit);
     }
+
 }

@@ -12,5 +12,4 @@ function like(btn, entityType, entityId, entityUserId, postId) {
             }
         }
     );
-
 }
