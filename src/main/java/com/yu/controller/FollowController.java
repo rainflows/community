@@ -1,5 +1,7 @@
 package com.yu.controller;
 
+import com.yu.event.EventProducer;
+import com.yu.pojo.Event;
 import com.yu.pojo.Page;
 import com.yu.pojo.User;
 import com.yu.service.FollowService;
@@ -46,6 +48,12 @@ public class FollowController implements CommunityConstant {
     private UserService userService;
 
     /**
+     * 事件生产者
+     */
+    @Autowired
+    private EventProducer eventProducer;
+
+    /**
      * 关注
      *
      * @return {@link String}
@@ -57,6 +65,16 @@ public class FollowController implements CommunityConstant {
         User user = hostHolder.getUser();
 
         followService.follow(user.getId(), entityType, entityId);
+
+        // 触发关注事件
+        Event event = new Event();
+        event.setTopic(TOPIC_FOLLOW);
+        event.setUserId(hostHolder.getUser().getId());
+        event.setEntityType(entityType);
+        event.setEntityId(entityId);
+        event.setEntityUserId(entityId);
+
+        eventProducer.fireEvent(event);
 
         return CommunityUtil.getJSONString(0, "已关注");
     }

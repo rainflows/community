@@ -1,7 +1,10 @@
 package com.yu.controller;
 
+import com.yu.event.EventProducer;
+import com.yu.pojo.Event;
 import com.yu.pojo.User;
 import com.yu.service.LikeService;
+import com.yu.utils.CommunityConstant;
 import com.yu.utils.CommunityUtil;
 import com.yu.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,7 @@ import java.util.Map;
  * @date 2022/05/19
  */
 @Controller
-public class LikeController {
+public class LikeController implements CommunityConstant {
 
     /**
      * 点赞服务
@@ -35,16 +38,23 @@ public class LikeController {
     private HostHolder hostHolder;
 
     /**
+     * 事件生产者
+     */
+    @Autowired
+    private EventProducer eventProducer;
+
+    /**
      * 点赞
      *
-     * @param entityType   实体类型
-     * @param entityId     实体id
-     * @param entityUserId 实体用户id
+     * @param entityType    实体类型
+     * @param entityId      实体id
+     * @param entityUserId  实体用户id
+     * @param postId 讨论帖id
      * @return {@link String}
      */
     @RequestMapping(path = "/like", method = RequestMethod.POST)
     @ResponseBody
-    public String like(int entityType, int entityId, int entityUserId) {
+    public String like(int entityType, int entityId, int entityUserId, int postId) {
         User user = hostHolder.getUser();
         // 点赞
         likeService.like(user.getId(), entityType, entityId, entityUserId);
@@ -57,6 +67,18 @@ public class LikeController {
         map.put("likeCount", likeCount);
         map.put("likeStatus", likeStatus);
 
+        // 触发点赞事件
+        if (likeStatus == 1) {
+            Event event = new Event();
+            event.setTopic(TOPIC_LIKE);
+            event.setUserId(hostHolder.getUser().getId());
+            event.setEntityType(entityType);
+            event.setEntityId(entityId);
+            event.setEntityUserId(entityUserId);
+            event.setData("postId", postId);
+
+            eventProducer.fireEvent(event);
+        }
         return CommunityUtil.getJSONString(0, null, map);
     }
 

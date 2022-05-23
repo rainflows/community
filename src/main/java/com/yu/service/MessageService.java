@@ -104,6 +104,7 @@ public class MessageService {
      * @return int
      */
     public int readMessage(List<Integer> ids) {
+
         return messageMapper.updateStatus(ids, 1);
     }
 
@@ -114,6 +115,53 @@ public class MessageService {
      * @return int
      */
     public int deleteMessage(int id) {
+
         return messageMapper.updateStatus(Arrays.asList(new Integer[]{id}), 2);
+    }
+
+    /**
+     * 查询最新通知
+     *
+     * @param userId 用户id
+     * @param topic  主题
+     * @return {@link Message}
+     */
+    public Message findLatestNotice(int userId, String topic) {
+        return messageMapper.selectLatestNotice(userId, topic);
+    }
+
+    /**
+     * 查询通知数量
+     *
+     * @param userId 用户id
+     * @param topic  主题
+     * @return int
+     */
+    public int findNoticeCount(int userId, String topic) {
+        return messageMapper.selectNoticeCount(userId, topic);
+    }
+
+    /**
+     * 查询未读通知数
+     *
+     * @param userId 用户id
+     * @param topic  主题
+     * @return int
+     */
+    public int findNoticeUnreadCount(int userId, String topic) {
+        return messageMapper.selectNoticeUnreadCount(userId, topic);
+    }
+
+    /**
+     * 查找通知列表
+     *
+     * @param userId 用户id
+     * @param topic  主题
+     * @param offset 抵消
+     * @param limit  限制
+     * @return {@link List}<{@link Message}>
+     */
+    public List<Message> findNotices(int userId, String topic, int offset, int limit) {
+        return messageMapper.selectNotice(userId, topic, offset, limit);
     }
 }
