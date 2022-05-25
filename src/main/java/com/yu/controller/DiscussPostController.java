@@ -1,9 +1,7 @@
 package com.yu.controller;
 
-import com.yu.pojo.Comment;
-import com.yu.pojo.DiscussPost;
-import com.yu.pojo.Page;
-import com.yu.pojo.User;
+import com.yu.event.EventProducer;
+import com.yu.pojo.*;
 import com.yu.service.CommentService;
 import com.yu.service.DiscussPostService;
 import com.yu.service.LikeService;
@@ -62,6 +60,12 @@ public class DiscussPostController implements CommunityConstant {
     private LikeService likeService;
 
     /**
+     * 事件生产者
+     */
+    @Autowired
+    private EventProducer eventProducer;
+
+    /**
      * 添加讨论帖
      *
      * @param title   标题
@@ -81,6 +85,14 @@ public class DiscussPostController implements CommunityConstant {
         discussPost.setContent(content);
         discussPost.setCreateTime(new Date());
         discussPostService.addDiscussPost(discussPost);
+
+        // 触发发帖事件
+        Event event = new Event();
+        event.setTopic(TOPIC_PUBLISH);
+        event.setUserId(user.getId());
+        event.setEntityType(ENTITY_TYPE_POST);
+        event.setEntityId(discussPost.getId());
+        eventProducer.fireEvent(event);
 
         return CommunityUtil.getJSONString(0, "发布成功");
     }

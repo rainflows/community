@@ -41,9 +41,11 @@ spring:
       group-id: test-consumer-group
       enable-auto-commit: true
       auto-commit-interval: 3000
+  elasticsearch:
+    uris: 127.0.0.1:9200
+    username: yu
 
 community:
   path:
     domain: http://localhost:8080
     upload: d:/javaweb/data/upload
-
