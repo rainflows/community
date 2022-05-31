@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * 登录机票
+ * 登录凭证
  *
  * @author yu
  * @date 2022/05/11

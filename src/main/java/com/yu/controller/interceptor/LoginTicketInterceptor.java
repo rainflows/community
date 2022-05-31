@@ -6,6 +6,10 @@ import com.yu.service.UserService;
 import com.yu.utils.CookieUtil;
 import com.yu.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
- * 登录票拦截器
+ * 登录凭证拦截器
  *
  * @author yu
  * @date 2022/05/12
@@ -30,7 +34,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
     private UserService userService;
 
     /**
-     * 主机架
+     * 用户持有者
      */
     @Autowired
     private HostHolder hostHolder;
@@ -57,6 +61,9 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
                 User user = userService.findUserById(loginTicket.getUserId());
                 // 在本次请求中持有用户
                 hostHolder.setUser(user);
+                // 构建用户认证的结果，并存入SecurityContext，以便于Security进行授权
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), userService.getAuthorities(user.getId()));
+                SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
             }
         }
         return true;
@@ -85,7 +92,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
      * @param request  请求
      * @param response 响应
      * @param handler  处理程序
-     * @param ex       前女友
+     * @param ex       异常
      * @throws Exception 异常
      */
     @Override

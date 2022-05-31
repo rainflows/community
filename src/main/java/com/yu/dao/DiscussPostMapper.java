@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 讨论后映射器
+ * 讨论帖映射器
  *
  * @author yu
  * @date 2022/05/09
@@ -22,26 +22,26 @@ public interface DiscussPostMapper {
      * @param limit  限制
      * @return {@link List}<{@link DiscussPost}>
      */
-    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
+    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit, int orderMode);
 
     /**
-     * 选择讨论pos行
+     * 选择讨论帖行数
      *
      * @param userId 用户id
      * @return int
      */
-    int selectDiscussPosRows(@Param("userId") int userId);
+    int selectDiscussPostRows(@Param("userId") int userId);
 
     /**
-     * 插入讨论后
+     * 插入讨论帖
      *
-     * @param discussPost 讨论后
+     * @param discussPost 讨论帖
      * @return int
      */
     int insertDiscussPost(DiscussPost discussPost);
 
     /**
-     * 选择讨论postid
+     * 选择讨论帖id
      *
      * @param id id
      * @return {@link DiscussPost}
@@ -56,4 +56,31 @@ public interface DiscussPostMapper {
      * @return int
      */
     int updateCommentCount(int id, int commentCount);
+
+    /**
+     * 更新类型
+     *
+     * @param id   id
+     * @param type 类型
+     * @return int
+     */
+    int updateType(int id, int type);
+
+    /**
+     * 更新状态
+     *
+     * @param id     id
+     * @param status 状态
+     * @return int
+     */
+    int updateStatus(int id, int status);
+
+    /**
+     * 更新分数
+     *
+     * @param id    id
+     * @param score 分数
+     * @return int
+     */
+    int updateScore(int id, double score);
 }

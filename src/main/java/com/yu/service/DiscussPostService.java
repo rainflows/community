@@ -1,22 +1,37 @@
 package com.yu.service;
 
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.yu.dao.DiscussPostMapper;
 import com.yu.pojo.DiscussPost;
 import com.yu.utils.SensitiveFilter;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 讨论后服务
+ * 讨论帖服务
  *
  * @author yu
  * @date 2022/05/09
  */
 @Service
 public class DiscussPostService {
+
+    /**
+     * 日志记录器
+     */
+    private static final Logger logger = LoggerFactory.getLogger(DiscussPostService.class);
+
     /**
      * 讨论后映射器
      */
@@ -30,6 +45,65 @@ public class DiscussPostService {
     private SensitiveFilter sensitiveFilter;
 
     /**
+     * 最大尺寸
+     */
+    @Value("${caffeine.posts.max-size}")
+    private int maxSize;
+
+    /**
+     * 到期秒
+     */
+    @Value("${caffeine.posts.expire-seconds}")
+    private int expireSeconds;
+
+    /**
+     * 帖子列表缓存
+     * Caffeine核心接口：Cache,LoadingCache,AsyncLoadingCache
+     */
+    private LoadingCache<String, List<DiscussPost>> postListCache;
+
+    /**
+     * 帖子总数缓存
+     */
+    private LoadingCache<Integer, Integer> postRowsCache;
+
+    /**
+     * 初始化
+     * 优化
+     */
+    @PostConstruct
+    public void init() {
+        // 初始化帖子列表缓存
+        postListCache = Caffeine.newBuilder().maximumSize(maxSize).expireAfterWrite(expireSeconds, TimeUnit.SECONDS)
+                .build(new CacheLoader<String, List<DiscussPost>>() {
+                    @Override
+                    public @Nullable List<DiscussPost> load(String s) throws Exception {
+                        if (s == null || s.length() == 0) {
+                            throw new IllegalArgumentException("参数错误！");
+                        }
+                        String[] params = s.split(":");
+                        if (params == null || params.length != 2) {
+                            throw new IllegalArgumentException("参数错误！");
+                        }
+                        Integer offset = Integer.valueOf(params[0]);
+                        Integer limit = Integer.valueOf(params[1]);
+
+                        logger.debug("load post list from DB.");
+                        return discussPostMapper.selectDiscussPosts(0, offset, limit, 0);
+                    }
+                });
+        // 初始化帖子总数缓存
+        postRowsCache = Caffeine.newBuilder().maximumSize(maxSize).expireAfterWrite(expireSeconds, TimeUnit.SECONDS)
+                .build(new CacheLoader<Integer, Integer>() {
+                    @Override
+                    public @Nullable Integer load(Integer integer) throws Exception {
+                        logger.debug("load post rows from DB.");
+                        return discussPostMapper.selectDiscussPostRows(integer);
+                    }
+                });
+    }
+
+    /**
      * 找到讨论帖子
      *
      * @param userId 用户id
@@ -37,18 +111,30 @@ public class DiscussPostService {
      * @param limit  限制
      * @return {@link List}<{@link DiscussPost}>
      */
-    public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit) {
-        return discussPostMapper.selectDiscussPosts(userId, offset, limit);
+    public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit, int orderMode) {
+        // 利用缓存进行优化
+        if (userId == 0 && orderMode == 1) {
+            return postListCache.get(offset + ":" + limit);
+        }
+        logger.debug("load post list from DB.");
+
+        return discussPostMapper.selectDiscussPosts(userId, offset, limit, orderMode);
     }
 
     /**
-     * 找到讨论帖子行
+     * 找到讨论帖行数
      *
      * @param userId 用户id
      * @return int
      */
     public int findDiscussPostRows(int userId) {
-        return discussPostMapper.selectDiscussPosRows(userId);
+        // 利用缓存进行优化
+        if (userId == 0) {
+            return postRowsCache.get(userId);
+        }
+        logger.debug("load post rows from DB.");
+
+        return discussPostMapper.selectDiscussPostRows(userId);
     }
 
     /**
@@ -90,5 +176,38 @@ public class DiscussPostService {
      */
     public int updateCommentCount(int id, int commentCount) {
         return discussPostMapper.updateCommentCount(id, commentCount);
+    }
+
+    /**
+     * 更新类型
+     *
+     * @param id   id
+     * @param type 类型
+     * @return int
+     */
+    public int updateType(int id, int type) {
+        return discussPostMapper.updateType(id, type);
+    }
+
+    /**
+     * 更新状态
+     *
+     * @param id     id
+     * @param status 状态
+     * @return int
+     */
+    public int updateStatus(int id, int status) {
+        return discussPostMapper.updateStatus(id, status);
+    }
+
+    /**
+     * 更新分数
+     *
+     * @param id    id
+     * @param score 分数
+     * @return int
+     */
+    public int updateScore(int id, double score) {
+        return discussPostMapper.updateScore(id, score);
     }
 }

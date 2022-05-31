@@ -48,15 +48,12 @@ public class ElasticsearchTest {
 
     @Test
     public void testInsertList() {
-        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(101, 0, 100));
-        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(102, 0, 100));
-        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(103, 0, 100));
-        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(111, 0, 100));
-        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(112, 0, 100));
-        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(131, 0, 100));
-        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(132, 0, 100));
-        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(133, 0, 100));
-        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(134, 0, 100));
+        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(138, 0, 100, 0));
+        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(145, 0, 100, 0));
+        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(146, 0, 100, 0));
+        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(11, 0, 100, 0));
+        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(149, 0, 100, 0));
+        discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(154, 0, 100, 0));
     }
 
     @Test
@@ -81,7 +78,7 @@ public class ElasticsearchTest {
 //                .withSorts(SortBuilders.fieldSort("type").order(SortOrder.DESC))
 //                .withSorts(SortBuilders.fieldSort("score").order(SortOrder.DESC))
 //                .withSorts(SortBuilders.fieldSort("createTime").order(SortOrder.DESC))
-                .withPageable(PageRequest.of(0,10))
+                .withPageable(PageRequest.of(0, 10))
                 .withHighlightFields(new HighlightBuilder.Field("title").preTags("<em>").postTags("</em>"),
                         new HighlightBuilder.Field("content").preTags("<em>").postTags("</em>"))
                 .build();

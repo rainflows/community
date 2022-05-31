@@ -1,24 +1,29 @@
 package com.yu.controller.interceptor;
 
-import com.yu.annotation.LoginRequired;
+import com.yu.pojo.User;
+import com.yu.service.StatisticsService;
 import com.yu.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
 
 /**
- * 登录需要拦截器
+ * 统计数据拦截器
  *
  * @author yu
- * @date 2022/05/13
+ * @date 2022/05/28
  */
 @Component
-public class LoginRequiredInterceptor implements HandlerInterceptor {
+public class StatisticsInterceptor implements HandlerInterceptor {
+
+    /**
+     * 统计服务
+     */
+    @Autowired
+    private StatisticsService statisticsService;
 
     /**
      * 用户持有者
@@ -37,14 +42,13 @@ public class LoginRequiredInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
-            Method method = handlerMethod.getMethod();
-            LoginRequired loginRequired = method.getDeclaredAnnotation(LoginRequired.class);
-            if (loginRequired != null && hostHolder.getUser() == null) {
-                response.sendRedirect(request.getContextPath() + "/login");
-                return false;
-            }
+        // 统计UV
+        String ip = request.getRemoteHost();
+        statisticsService.recordUV(ip);
+        // 统计DAU
+        User user = hostHolder.getUser();
+        if (user != null) {
+            statisticsService.recordDAU(user.getId());
         }
         return true;
     }

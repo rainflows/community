@@ -48,6 +48,21 @@ public class RedisKeyUtil {
      */
     private static final String PREFIX_USER = "user";
 
+    /**
+     * 前缀_UV
+     */
+    private static final String PREFIX_UV = "uv";
+
+    /**
+     * 前缀_DAU
+     */
+    private static final String PREFIX_DAU = "dau";
+
+    /**
+     * 前缀_帖子
+     */
+    private static final String PREFIX_POST = "post";
+
 
     /**
      * 得到某个实体的赞
@@ -115,7 +130,63 @@ public class RedisKeyUtil {
         return PREFIX_TICKET + SPLIT + ticket;
     }
 
+    /**
+     * 获取用户的键
+     *
+     * @param userId 用户id
+     * @return {@link String}
+     */
     public static String getUserKey(int userId) {
         return PREFIX_USER + SPLIT + userId;
+    }
+
+    /**
+     * 得到uvkey
+     *
+     * @param date 日期
+     * @return {@link String}
+     */
+    public static String getUVKey(String date) {
+        return PREFIX_UV + SPLIT + date;
+    }
+
+    /**
+     * 得到uvkey
+     *
+     * @param startDate 开始日期
+     * @param endDate   结束日期
+     * @return {@link String}
+     */
+    public static String getUVKey(String startDate, String endDate) {
+        return PREFIX_UV + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    /**
+     * 得到daukey
+     *
+     * @return {@link String}
+     */
+    public static String getDAUKey(String date) {
+        return PREFIX_DAU + SPLIT + date;
+    }
+
+    /**
+     * 得到daukey
+     *
+     * @param startDate 开始日期
+     * @param endDate   结束日期
+     * @return {@link String}
+     */
+    public static String getDAUKey(String startDate, String endDate) {
+        return PREFIX_DAU + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    /**
+     * 得到帖子分数key
+     *
+     * @return {@link String}
+     */
+    public static String getPostScoreKey(){
+        return PREFIX_POST + SPLIT + "score";
     }
 }

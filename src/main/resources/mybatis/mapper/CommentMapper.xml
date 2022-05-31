@@ -13,7 +13,7 @@
 
     <select id="selectCommentByEntity" resultType="Comment">
         select <include refid="selectFields"></include>
-        from community.comment
+        from comment
         where status = 0
         and entity_type = #{entityType}
         and entity_id = #{entityId}
@@ -23,32 +23,32 @@
 
     <select id="selectCountByEntity" resultType="int">
         select count(id)
-        from community.comment
+        from comment
         where status = 0
         and entity_type = #{entityType}
         and entity_id = #{entityId}
     </select>
 
     <insert id="insertComment" parameterType="Comment">
-        insert into community.comment(<include refid="insertFields"></include>)
+        insert into comment(<include refid="insertFields"></include>)
         values (#{userId},#{entityType},#{entityId},#{targetId},#{content},#{status},#{createTime})
     </insert>
 
     <select id="selectCommentById" resultType="Comment">
         select <include refid="selectFields"/>
-        from community.comment
+        from comment
         where id = #{id}
     </select>
 
     <select id="selectCommentsByUser" resultType="Comment">
         select <include refid="selectFields"/>
-        from community.comment
+        from comment
         where status != 1
         and user_id = #{userId}
         and entity_type = 1
         and exists (
             select id
-            from community.discuss_post
+            from discuss_post
             where id = comment.entity_id
             and status != 2
         )
@@ -58,13 +58,13 @@
 
     <select id="selectCountByUser" resultType="int">
         select count(id)
-        from community.comment
+        from comment
         where status != 1
         and user_id = #{userId}
         and entity_type = 1
         and exists (
             select id
-            from community.discuss_post
+            from discuss_post
             where id = comment.entity_id
             and status != 2
         )

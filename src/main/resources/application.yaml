@@ -14,7 +14,7 @@ spring:
   datasource:
     username: root
     password: 666666
-    url: jdbc:mysql://localhost:3306/mybatis?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT
+    url: jdbc:mysql://localhost:3306/community?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT
     driverClassName: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
@@ -44,8 +44,54 @@ spring:
   elasticsearch:
     uris: 127.0.0.1:9200
     username: yu
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 15
+        queue-capacity: 100
+    scheduling:
+      pool:
+        size: 5
+  quartz:
+    job-store-type: JDBC
+    scheduler-name: communityScheduler
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceId: AUTO
+          jobStore:
+            class: org.springframework.scheduling.quartz.LocalDataSourceJobStore
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            isClustered: true
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
 
 community:
   path:
     domain: http://localhost:8080
     upload: d:/javaweb/data/upload
+
+wk:
+  image:
+    command: d:/wkhtmltopdf/bin/wkhtmltoimage
+    storage: d:/javaweb/wk-images
+
+qiniu:
+  key:
+    access: ucnILTAGzlUqsAjD-fsS9SO4eq0ydekBo9hgSknh
+    secret: Z0D1jk4wzhrT7m69U460r-_uI1rI275zexMsGS4l
+  bucket:
+    header:
+      name: communityheaderyu
+      url: http://rcp2x4fzq.bkt.clouddn.com
+    share:
+      name: communityshareyu
+      url: http://rcp2xxv9r.bkt.clouddn.com
+
+caffeine:
+  posts:
+    max-size: 15
+    expire-seconds: 180
