@@ -95,3 +95,10 @@ caffeine:
   posts:
     max-size: 15
     expire-seconds: 180
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: info,caches
